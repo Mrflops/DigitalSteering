@@ -3,6 +3,7 @@ Please note that this assumes you already have Python installed on your system.
 
 ## Install Required Packages
 First, you need to install the necessary Python packages. Open your terminal or command prompt and run the following commands:
+
 pip install opencv-python
 
 pip install mediapipe
