@@ -1,14 +1,14 @@
 # DigitalSteering
 Make sure you have Python installed on your machine. If not, you can download it from the official Python website.
 
-# Install required modules
+## Install required modules
 pip install mediapipe
 
 pip install opencv-python
 
 pip install ctypes
 
-# Run the code
+## Run the code
 python steering_code.py
 Step 6: Observe Hand Gestures
 
