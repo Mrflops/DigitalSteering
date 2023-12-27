@@ -3,12 +3,15 @@ Make sure you have Python installed on your machine. If not, you can download it
 
 # Install required modules
 pip install mediapipe
+
 pip install opencv-python
+
 pip install ctypes
 
 # Run the code
 python steering_code.py
 Step 6: Observe Hand Gestures
+
 Once the code is running, it will use your webcam to capture frames. It tracks hand gestures, and based on the gestures, it simulates key presses for turning left, turning right, going left aggressively, going right aggressively, and keeping straight.
 
 ## Terminate the Program
