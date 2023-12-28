@@ -149,7 +149,7 @@ with mp_hands.Hands(
                     release_key('s')
                     press_key('w')
                 elif -45 <= angle_deg < -20:
-                    print("Light left")
+                    print("Light right")
                     release_key('a')
                     release_key('d')
                     release_key('w')
@@ -165,7 +165,7 @@ with mp_hands.Hands(
                     press_key('d')  # Keep 'd' as is
                     release_key('a')
                 elif 20 <= angle_deg < 45:
-                    print("Light right")
+                    print("Light left")
                     release_key('a')
                     release_key('d')
                     release_key('w')
