@@ -64,13 +64,13 @@ with mp_hands.Hands(
         model_complexity=0,
         min_detection_confidence=0.5,
         min_tracking_confidence=0.5) as hands:
-    while cap.isOpened():
-        success, image = cap.read()
-        if not success:
-            print("Wait until the frame comes back")
-            continue
+    try:
+        while cap.isOpened():
+            success, image = cap.read()
+            if not success:
+                print("Wait until the frame comes back")
+                continue
 
-        try:
             # Convert the image to RGB and process hands
             image.flags.writeable = False
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -180,12 +180,12 @@ with mp_hands.Hands(
                     release_key('s')
                     press_key('a')  # Keep 'a' as is
                     release_key('d')
-
             cv2.imshow('VIDEO HAND THING', cv2.flip(image, 1))
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
-        except Exception as e:
-            print(f"Error: {e}")
-
-# Release the video capture at the end
-cap.release()
+    except KeyboardInterrupt:
+        print("Program terminated by user.")
+    finally:
+        # Release the video capture at the end
+        cap.release()
+        cv2.destroyAllWindows()
