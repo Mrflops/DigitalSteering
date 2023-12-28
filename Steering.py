@@ -62,8 +62,8 @@ cap = cv2.VideoCapture(0)
 
 with mp_hands.Hands(
         model_complexity=0,
-        min_detection_confidence=0.5,
-        min_tracking_confidence=0.5) as hands:
+        min_detection_confidence=0.4,
+        min_tracking_confidence=0.4) as hands:
     while cap.isOpened():
         success, image = cap.read()
         if not success:
