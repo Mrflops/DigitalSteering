@@ -1,4 +1,13 @@
-# Digital Steering
+# DigitalSteering
+### What is DigitalSteering?
+At its core, DigitalSteering employs sophisticated algorithms to interpret user inputs and translate them into virtual steering commands. The program mimics the functionality of a physical steering wheel, allowing users to navigate and control in-game vehicles with precision.
+
+### Why DigitalSteering?
+One of the primary goals of DigitalSteering is to break down barriers in gaming accessibility. By offering diverse and customizable control methods, it caters to a broader audience, including individuals with different physical abilities and disabilities.
+
+DigitalSteering takes a step further by addressing the specific needs of individuals with limited mobility, particularly those without the use of arms or hands. The project incorporates adaptive technologies to empower gamers facing physical challenges, providing them with a means to enjoy gaming on equal terms.
+
+# Guide
 Please note that this assumes you already have Python installed on your system.
 
 ONLY tested 3.10 Python so it might not work in newer and older versions
