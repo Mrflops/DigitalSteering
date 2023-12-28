@@ -180,6 +180,14 @@ with mp_hands.Hands(
                     release_key('s')
                     press_key('a')  # Keep 'a' as is
                     release_key('d')
+            else:
+                # No hands detected, release all keys
+                print("No hands detected")
+                release_key('a')
+                release_key('d')
+                release_key('w')
+                release_key('s')
+
             cv2.imshow('VIDEO HAND THING', cv2.flip(image, 1))
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
