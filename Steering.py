@@ -62,8 +62,8 @@ cap = cv2.VideoCapture(0)
 
 with mp_hands.Hands(
         model_complexity=0,
-        min_detection_confidence=0.4,
-        min_tracking_confidence=0.4) as hands:
+        min_detection_confidence=0.5,
+        min_tracking_confidence=0.5) as hands:
     while cap.isOpened():
         success, image = cap.read()
         if not success:
@@ -136,32 +136,50 @@ with mp_hands.Hands(
                 l = (int(math.sqrt((co[0][0] - co[1][0]) ** 2 * (co[0][1] - co[1][1]) ** 2)) - 150) // 2
                 cv2.line(image, (int(xa), int(ya)), (int(xb), int(yb)), (195, 255, 62), 20)
 
-                if co[0][0] > co[1][0] and co[0][1] > co[1][1] and co[0][1] - co[1][1] > 65:
-                    print("Turn left.")
-                    release_key('s')
-                    release_key('d')
-                    press_key('a')
-                    cv2.putText(image, "-->", (50, 50), font, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
-                    cv2.line(image, (int(xbp), int(ybp)), (int(xm), int(ym)), (195, 255, 62), 20)
-                elif co[0][0] > co[1][0] and co[1][1] > co[0][1] and co[1][1] - co[0][1] > 65:
-                    print("Turn right.")
-                    release_key('s')
-                    release_key('a')
-                    press_key('d')
-                    cv2.putText(image, "<--", (50, 50), font, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
-                    cv2.line(image, (int(xap), int(yap)), (int(xm), int(ym)), (195, 255, 62), 20)
-                else:
-                    print("keeping straight")
-                    release_key('s')
-                    release_key('a')
-                    release_key('d')
-                    press_key('w')
-                    cv2.putText(image, "^", (50, 50), font, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
+                # Calculate angle in degrees
+                angle_rad = math.atan2(co[1][1] - co[0][1], co[1][0] - co[0][0])
+                angle_deg = math.degrees(angle_rad)
 
-                    if ybp > yap:
-                        cv2.line(image, (int(xbp), int(ybp)), (int(xm), int(ym)), (195, 255, 62), 20)
-                    else:
-                        cv2.line(image, (int(xap), int(yap)), (int(xm), int(ym)), (195, 255, 62), 20)
+                # Steering logic based on the adjusted angle
+                if -20 <= angle_deg <= 20:
+                    print("Straight")
+                    release_key('a')
+                    release_key('d')
+                    release_key('w')
+                    release_key('s')
+                    press_key('w')
+                elif -45 <= angle_deg < -20:
+                    print("Light left")
+                    release_key('a')
+                    release_key('d')
+                    release_key('w')
+                    release_key('s')
+                    press_key('w')
+                    press_key('d')  # Switch 'a' and 'd'
+                elif -90 <= angle_deg < -45:
+                    print("Hard right")
+                    release_key('a')
+                    release_key('d')
+                    release_key('w')
+                    release_key('s')
+                    press_key('d')  # Keep 'd' as is
+                    release_key('a')
+                elif 20 <= angle_deg < 45:
+                    print("Light right")
+                    release_key('a')
+                    release_key('d')
+                    release_key('w')
+                    release_key('s')
+                    press_key('w')
+                    press_key('a')  # Switch 'a' and 'd'
+                elif 45 <= angle_deg <= 90:
+                    print("Hard left")
+                    release_key('a')
+                    release_key('d')
+                    release_key('w')
+                    release_key('s')
+                    press_key('a')  # Keep 'a' as is
+                    release_key('d')
 
             cv2.imshow('VIDEO HAND THING', cv2.flip(image, 1))
             if cv2.waitKey(5) & 0xFF == ord('q'):
