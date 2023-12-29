@@ -20,10 +20,10 @@ pip install opencv-python
 pip install mediapipe
 
 ## Download the Code
-Copy the provided Python code into a file with a .py extension, for example, hand_tracking.py.
+Copy the provided Python code into a workplace where you can run the code
 
 ## Run the Code
-Navigate to the directory where you saved hand_tracking.py using the terminal or command prompt.
+Navigate to the directory where you saved the code using your preferred method, then run the code using python.
 
 ## Exit the Application
 To exit the application, press the 'q' key while the application window is active.
