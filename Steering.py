@@ -59,6 +59,7 @@ def release_key(key):
 
 # Initialize the video capture outside the loop to avoid reopening it every iteration
 cap = cv2.VideoCapture(0)
+hands_detected = False
 
 with mp_hands.Hands(
         model_complexity=0,
@@ -81,6 +82,7 @@ with mp_hands.Hands(
             co = []
 
             if results.multi_hand_landmarks:
+                hands_detected = True
                 for hand_landmarks in results.multi_hand_landmarks:
                     mp_drawing.draw_landmarks(
                         image,
@@ -99,8 +101,10 @@ with mp_hands.Hands(
                                 co.append(list(pixelCoordinatesLandmark))
                             except:
                                 continue
+            else:
+                hands_detected = False
 
-            if len(co) == 2:
+            if hands_detected and len(co) == 2:
                 xm, ym = (co[0][0] + co[1][0]) / 2, (co[0][1] + co[1][1]) / 2
                 radius = 150
                 try:
@@ -180,7 +184,7 @@ with mp_hands.Hands(
                     release_key('s')
                     press_key('a')  # Keep 'a' as is
                     release_key('d')
-            else:
+            elif not hands_detected:
                 # No hands detected, release all keys
                 print("No hands detected")
                 release_key('a')
@@ -188,7 +192,7 @@ with mp_hands.Hands(
                 release_key('w')
                 release_key('s')
 
-            cv2.imshow('VIDEO HAND THING', cv2.flip(image, 1))
+            cv2.imshow('Steering', cv2.flip(image, 1))
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
     except KeyboardInterrupt:
