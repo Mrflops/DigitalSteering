@@ -7,6 +7,8 @@ One of the primary goals of DigitalSteering is to break down barriers in gaming 
 
 DigitalSteering takes a step further by addressing the specific needs of individuals with limited mobility, particularly those without the use of arms or hands. The project incorporates adaptive technologies to empower gamers facing physical challenges, providing them with a means to enjoy gaming on equal terms.
 
+![image-2023-12-30-111624263](https://i.ibb.co/qgBC6J3/image-2023-12-30-111624263.png)
+
 # Guide For Pycharm
 Please note that this assumes you already have Python installed on your system.
 
