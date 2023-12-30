@@ -58,7 +58,7 @@ def release_key(key):
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
 # Initialize the video capture outside the loop to avoid reopening it every iteration
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0) # Change based on your Camera
 hands_detected = False
 
 with mp_hands.Hands(
@@ -69,8 +69,8 @@ with mp_hands.Hands(
         while cap.isOpened():
             success, image = cap.read()
             if not success:
-                print("Wait until the frame comes back")
-                continue
+                print("Error reading frame. Exiting...")
+                break
 
             # Convert the image to RGB and process hands
             image.flags.writeable = False
@@ -104,87 +104,103 @@ with mp_hands.Hands(
             else:
                 hands_detected = False
 
-            if hands_detected and len(co) == 2:
-                xm, ym = (co[0][0] + co[1][0]) / 2, (co[0][1] + co[1][1]) / 2
-                radius = 150
-                try:
-                    m = (co[1][1] - co[0][1]) / (co[1][0] - co[0][0])
-                except:
-                    continue
-
-                a = 1 + m ** 2
-                b = -2 * xm - 2 * co[0][0] * (m ** 2) + 2 * m * co[0][1] - 2 * m * ym
-                c = xm ** 2 + (m ** 2) * (co[0][0] ** 2) + co[0][1] ** 2 + ym ** 2 - 2 * co[0][1] * ym - 2 * co[0][1] * \
-                    co[0][0] * m + 2 * m * ym * co[0][0] - 22500
-
-                xa = (-b + (b ** 2 - 4 * a * c) ** 0.5) / (2 * a)
-                xb = (-b - (b ** 2 - 4 * a * c) ** 0.5) / (2 * a)
-                ya = m * (xa - co[0][0]) + co[0][1]
-                yb = m * (xb - co[0][0]) + co[0][1]
-
-                if m != 0:
-                    ap = 1 + ((-1 / m) ** 2)
-                    bp = -2 * xm - 2 * xm * ((-1 / m) ** 2) + 2 * (-1 / m) * ym - 2 * (-1 / m) * ym
-                    cp = xm ** 2 + ((-1 / m) ** 2) * (xm ** 2) + ym ** 2 + ym ** 2 - 2 * ym * ym - 2 * ym * xm * (
-                            -1 / m) + 2 * (-1 / m) * ym * xm - 22500
-
+            if hands_detected:
+                if len(co) == 2:
+                    xm, ym = (co[0][0] + co[1][0]) / 2, (co[0][1] + co[1][1]) / 2
+                    radius = 150
                     try:
-                        xap = (-bp + (bp ** 2 - 4 * ap * cp) ** 0.5) / (2 * ap)
-                        xbp = (-bp - (bp ** 2 - 4 * ap * cp) ** 0.5) / (2 * ap)
-                        yap = (-1 / m) * (xap - xm) + ym
-                        ybp = (-1 / m) * (xbp - xm) + ym
+                        m = (co[1][1] - co[0][1]) / (co[1][0] - co[0][0])
                     except:
                         continue
 
-                cv2.circle(img=image, center=(int(xm), int(ym)), radius=radius, color=(195, 255, 62), thickness=15)
-                l = (int(math.sqrt((co[0][0] - co[1][0]) ** 2 * (co[0][1] - co[1][1]) ** 2)) - 150) // 2
-                cv2.line(image, (int(xa), int(ya)), (int(xb), int(yb)), (195, 255, 62), 20)
+                    a = 1 + m ** 2
+                    b = -2 * xm - 2 * co[0][0] * (m ** 2) + 2 * m * co[0][1] - 2 * m * ym
+                    c = xm ** 2 + (m ** 2) * (co[0][0] ** 2) + co[0][1] ** 2 + ym ** 2 - 2 * co[0][1] * ym - 2 * co[0][1] * \
+                        co[0][0] * m + 2 * m * ym * co[0][0] - 22500
 
-                # Calculate angle in degrees
-                angle_rad = math.atan2(co[1][1] - co[0][1], co[1][0] - co[0][0])
-                angle_deg = math.degrees(angle_rad)
+                    xa = (-b + (b ** 2 - 4 * a * c) ** 0.5) / (2 * a)
+                    xb = (-b - (b ** 2 - 4 * a * c) ** 0.5) / (2 * a)
+                    ya = m * (xa - co[0][0]) + co[0][1]
+                    yb = m * (xb - co[0][0]) + co[0][1]
 
-                # Steering logic based on the adjusted angle
-                if -20 <= angle_deg <= 20:
-                    print("Straight")
+                    if m != 0:
+                        ap = 1 + ((-1 / m) ** 2)
+                        bp = -2 * xm - 2 * xm * ((-1 / m) ** 2) + 2 * (-1 / m) * ym - 2 * (-1 / m) * ym
+                        cp = xm ** 2 + ((-1 / m) ** 2) * (xm ** 2) + ym ** 2 + ym ** 2 - 2 * ym * ym - 2 * ym * xm * (
+                                -1 / m) + 2 * (-1 / m) * ym * xm - 22500
+
+                        try:
+                            xap = (-bp + (bp ** 2 - 4 * ap * cp) ** 0.5) / (2 * ap)
+                            xbp = (-bp - (bp ** 2 - 4 * ap * cp) ** 0.5) / (2 * ap)
+                            yap = (-1 / m) * (xap - xm) + ym
+                            ybp = (-1 / m) * (xbp - xm) + ym
+                        except:
+                            continue
+
+                    cv2.circle(img=image, center=(int(xm), int(ym)), radius=radius, color=(195, 255, 62), thickness=15)
+                    l = (int(math.sqrt((co[0][0] - co[1][0]) ** 2 * (co[0][1] - co[1][1]) ** 2)) - 150) // 2
+                    cv2.line(image, (int(xa), int(ya)), (int(xb), int(yb)), (195, 255, 62), 20)
+
+                    # Calculate angle in degrees
+                    angle_rad = math.atan2(co[1][1] - co[0][1], co[1][0] - co[0][0])
+                    angle_deg = math.degrees(angle_rad)
+
+                    # Steering logic based on the adjusted angle
+                    if -20 <= angle_deg <= 20:
+                        print("Straight")
+                        release_key('a')
+                        release_key('d')
+                        release_key('w')
+                        release_key('s')
+                        press_key('w')
+                    elif -45 <= angle_deg < -20:
+                        print("Light right")
+                        release_key('a')
+                        release_key('d')
+                        release_key('w')
+                        release_key('s')
+                        press_key('w')
+                        press_key('d')
+                    elif -90 <= angle_deg < -45:
+                        print("Hard right")
+                        release_key('a')
+                        release_key('d')
+                        release_key('w')
+                        release_key('s')
+                        press_key('d')
+                        release_key('a')
+                    elif 20 <= angle_deg < 45:
+                        print("Light left")
+                        release_key('a')
+                        release_key('d')
+                        release_key('w')
+                        release_key('s')
+                        press_key('w')
+                        press_key('a')
+                    elif 45 <= angle_deg <= 90:
+                        print("Hard left")
+                        release_key('a')
+                        release_key('d')
+                        release_key('w')
+                        release_key('s')
+                        press_key('a')
+                        release_key('d')
+                elif len(co) == 1:
+                    print("Backwards")
                     release_key('a')
                     release_key('d')
                     release_key('w')
                     release_key('s')
-                    press_key('w')
-                elif -45 <= angle_deg < -20:
-                    print("Light right")
+                    press_key('s')
+                    release_key('w')
+                else:
+                    print("No hands detected")
+                    # No hands detected, release all keys
                     release_key('a')
                     release_key('d')
                     release_key('w')
                     release_key('s')
-                    press_key('w')
-                    press_key('d')  # Switch 'a' and 'd'
-                elif -90 <= angle_deg < -45:
-                    print("Hard right")
-                    release_key('a')
-                    release_key('d')
-                    release_key('w')
-                    release_key('s')
-                    press_key('d')  # Keep 'd' as is
-                    release_key('a')
-                elif 20 <= angle_deg < 45:
-                    print("Light left")
-                    release_key('a')
-                    release_key('d')
-                    release_key('w')
-                    release_key('s')
-                    press_key('w')
-                    press_key('a')  # Switch 'a' and 'd'
-                elif 45 <= angle_deg <= 90:
-                    print("Hard left")
-                    release_key('a')
-                    release_key('d')
-                    release_key('w')
-                    release_key('s')
-                    press_key('a')  # Keep 'a' as is
-                    release_key('d')
-            elif not hands_detected:
+            else:
                 # No hands detected, release all keys
                 print("No hands detected")
                 release_key('a')
