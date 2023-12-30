@@ -36,7 +36,7 @@ Go into pycharm and click on the three bars on top left. Click open... and selec
 ### Exit the Application
 To exit the application, press the 'q' key while the application window is active.
 
-Make sure your system has a webcam or an external camera connected. The script uses the default camera (index 0). If you have multiple cameras or a different camera index, you may need to modify the code by changing the number from (0) (Line 61)
+Make sure your system has a webcam or an external camera connected. The script uses the default camera (index 0). If you have multiple cameras or a different camera index, you may need to modify the code by changing the number from (0)
 
 Feel free to ask if you have any questions or encounter any issues!
 
