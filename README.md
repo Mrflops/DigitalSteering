@@ -16,6 +16,7 @@ ONLY tested 3.10 Python so it might not work in newer and older versions
 
 ## Install Required Packages
 First, you need to install the necessary Python packages. Open the integrated command prompt in Pycharm:
+![image-2023-12-30-111827489](https://i.ibb.co/phkntNw/image-2023-12-30-111827489.png)
 
 pip install opencv-python
 
