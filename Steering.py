@@ -1,3 +1,4 @@
+import time
 import math
 import cv2
 import mediapipe as mp
@@ -8,8 +9,9 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 font = cv2.FONT_HERSHEY_SIMPLEX
-
+bkwrds = 0
 PUL = ctypes.POINTER(ctypes.c_ulong)
+swap_triggered = {'left': False, 'right': False}
 
 class KeyBdInput(ctypes.Structure):
     _fields_ = [
@@ -58,7 +60,7 @@ def release_key(key):
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
 # Initialize the video capture outside the loop to avoid reopening it every iteration
-cap = cv2.VideoCapture(0) # Change based on your Camera
+cap = cv2.VideoCapture(0)  # Change based on your Camera
 hands_detected = False
 
 with mp_hands.Hands(
@@ -66,7 +68,13 @@ with mp_hands.Hands(
         min_detection_confidence=0.5,
         min_tracking_confidence=0.5) as hands:
     try:
+        swap_delay = 0.2
+        last_swap_time = time.time()
+
         while cap.isOpened():
+            current_time = time.time()
+            elapsed_time_since_last_swap = current_time - last_swap_time
+
             success, image = cap.read()
             if not success:
                 print("Error reading frame. Exiting...")
@@ -83,7 +91,7 @@ with mp_hands.Hands(
 
             if results.multi_hand_landmarks:
                 hands_detected = True
-                for hand_landmarks in results.multi_hand_landmarks:
+                for i, hand_landmarks in enumerate(results.multi_hand_landmarks):
                     mp_drawing.draw_landmarks(
                         image,
                         hand_landmarks,
@@ -98,7 +106,7 @@ with mp_hands.Hands(
                                 normalizedLandmark.y,
                                 imageWidth, imageHeight)
                             try:
-                                co.append(list(pixelCoordinatesLandmark))
+                                co.append((i, list(pixelCoordinatesLandmark)))
                             except:
                                 continue
             else:
@@ -106,22 +114,28 @@ with mp_hands.Hands(
 
             if hands_detected:
                 if len(co) == 2:
-                    xm, ym = (co[0][0] + co[1][0]) / 2, (co[0][1] + co[1][1]) / 2
+                    xm, ym = (co[0][1][0] + co[1][1][0]) / 2, (co[0][1][1] + co[1][1][1]) / 2
                     radius = 150
+
                     try:
-                        m = (co[1][1] - co[0][1]) / (co[1][0] - co[0][0])
-                    except:
+                        if co[1][1][0] - co[0][1][0] != 0:
+                            m = (co[1][1][1] - co[0][1][1]) / (co[1][1][0] - co[0][1][0])
+                        else:
+                            # Avoid division by zero
+                            continue
+                    except ZeroDivisionError:
+                        # Avoid division by zero
                         continue
 
                     a = 1 + m ** 2
-                    b = -2 * xm - 2 * co[0][0] * (m ** 2) + 2 * m * co[0][1] - 2 * m * ym
-                    c = xm ** 2 + (m ** 2) * (co[0][0] ** 2) + co[0][1] ** 2 + ym ** 2 - 2 * co[0][1] * ym - 2 * co[0][1] * \
-                        co[0][0] * m + 2 * m * ym * co[0][0] - 22500
+                    b = -2 * xm - 2 * co[0][1][0] * (m ** 2) + 2 * m * co[0][1][1] - 2 * m * ym
+                    c = xm ** 2 + (m ** 2) * (co[0][1][0] ** 2) + co[0][1][1] ** 2 + ym ** 2 - 2 * co[0][1][1] * ym - 2 * co[0][1][1] * \
+                        co[0][1][0] * m + 2 * m * ym * co[0][1][0] - 22500
 
                     xa = (-b + (b ** 2 - 4 * a * c) ** 0.5) / (2 * a)
                     xb = (-b - (b ** 2 - 4 * a * c) ** 0.5) / (2 * a)
-                    ya = m * (xa - co[0][0]) + co[0][1]
-                    yb = m * (xb - co[0][0]) + co[0][1]
+                    ya = m * (xa - co[0][1][0]) + co[0][1][1]
+                    yb = m * (xb - co[0][1][0]) + co[0][1][1]
 
                     if m != 0:
                         ap = 1 + ((-1 / m) ** 2)
@@ -137,62 +151,111 @@ with mp_hands.Hands(
                         except:
                             continue
 
-                    cv2.circle(img=image, center=(int(xm), int(ym)), radius=radius, color=(195, 255, 62), thickness=15)
-                    l = (int(math.sqrt((co[0][0] - co[1][0]) ** 2 * (co[0][1] - co[1][1]) ** 2)) - 150) // 2
-                    cv2.line(image, (int(xa), int(ya)), (int(xb), int(yb)), (195, 255, 62), 20)
+                        cv2.circle(img=image, center=(int(xm), int(ym)), radius=radius, color=(195, 255, 62), thickness=15)
+                        l = (int(math.sqrt((co[0][1][0] - co[1][1][0]) ** 2 * (co[0][1][1] - co[1][1][1]) ** 2)) - 150) // 2
+                        cv2.line(image, (int(xa), int(ya)), (int(xb), int(yb)), (195, 255, 62), 20)
 
-                    # Calculate angle in degrees
-                    angle_rad = math.atan2(co[1][1] - co[0][1], co[1][0] - co[0][0])
-                    angle_deg = math.degrees(angle_rad)
+                        # Calculate angle in degrees
+                        angle_rad = math.atan2(co[1][1][1] - co[0][1][1], co[1][1][0] - co[0][1][0])
+                        angle_deg = math.degrees(angle_rad)
 
-                    # Steering logic based on the adjusted angle
-                    if -20 <= angle_deg <= 20:
-                        print("Straight")
-                        release_key('a')
-                        release_key('d')
-                        release_key('w')
-                        release_key('s')
-                        press_key('w')
-                    elif -45 <= angle_deg < -20:
-                        print("Light right")
-                        release_key('a')
-                        release_key('d')
-                        release_key('w')
-                        release_key('s')
-                        press_key('w')
-                        press_key('d')
-                    elif -90 <= angle_deg < -45:
-                        print("Hard right")
-                        release_key('a')
-                        release_key('d')
-                        release_key('w')
-                        release_key('s')
-                        press_key('d')
-                        release_key('a')
-                    elif 20 <= angle_deg < 45:
-                        print("Light left")
-                        release_key('a')
-                        release_key('d')
-                        release_key('w')
-                        release_key('s')
-                        press_key('w')
-                        press_key('a')
-                    elif 45 <= angle_deg <= 90:
-                        print("Hard left")
-                        release_key('a')
-                        release_key('d')
-                        release_key('w')
-                        release_key('s')
-                        press_key('a')
-                        release_key('d')
+                        # Steering logic based on the adjusted angle
+                        if bkwrds == 0:
+                            if -20 <= angle_deg <= 20:
+                                print("Straight")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('w')
+                            elif -45 <= angle_deg < -20:
+                                print("Light right")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('w')
+                                press_key('d')
+                            elif -90 <= angle_deg < -45:
+                                print("Hard right")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('d')
+                                release_key('a')
+                            elif 20 <= angle_deg < 45:
+                                print("Light left")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('w')
+                                press_key('a')
+                            elif 45 <= angle_deg <= 90:
+                                print("Hard left")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('a')
+                                release_key('d')
+                        if bkwrds == 1:
+                            if -20 <= angle_deg <= 20:
+                                print("Backwards")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('s')
+                            elif -45 <= angle_deg < -20:
+                                print("Light left")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('s')
+                                press_key('a')
+                            elif -90 <= angle_deg < -45:
+                                print("Hard left")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('a')
+                                release_key('a')
+                            elif 20 <= angle_deg < 45:
+                                print("Light right")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('s')
+                                press_key('d')
+                            elif 45 <= angle_deg <= 90:
+                                print("Hard right")
+                                release_key('a')
+                                release_key('d')
+                                release_key('w')
+                                release_key('s')
+                                press_key('d')
+                                release_key('d')
+
+                    swap_triggered['left'] = True
+                    swap_triggered['right'] = True
+
                 elif len(co) == 1:
-                    print("Backwards")
-                    release_key('a')
-                    release_key('d')
-                    release_key('w')
-                    release_key('s')
-                    press_key('s')
-                    release_key('w')
+                    hand_idx, _ = co[0]
+                    if not swap_triggered['left'] and not swap_triggered['right']:
+                        if elapsed_time_since_last_swap >= swap_delay:
+                            print("Swapped direction!")
+                            bkwrds = 1 if bkwrds == 0 else 0
+                            release_key('a')
+                            release_key('d')
+                            release_key('w')
+                            release_key('s')
+                            swap_triggered['left'] = True if hand_idx == 0 else False
+                            swap_triggered['right'] = True if hand_idx == 1 else False
                 else:
                     print("No hands detected")
                     # No hands detected, release all keys
@@ -200,6 +263,8 @@ with mp_hands.Hands(
                     release_key('d')
                     release_key('w')
                     release_key('s')
+                    swap_triggered['left'] = False
+                    swap_triggered['right'] = False
             else:
                 # No hands detected, release all keys
                 print("No hands detected")
@@ -207,6 +272,8 @@ with mp_hands.Hands(
                 release_key('d')
                 release_key('w')
                 release_key('s')
+                swap_triggered['left'] = False
+                swap_triggered['right'] = False
 
             cv2.imshow('Steering', cv2.flip(image, 1))
             if cv2.waitKey(5) & 0xFF == ord('q'):
