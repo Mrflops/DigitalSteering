@@ -1,3 +1,5 @@
+[Open an Issue](https://github.com/Mrflops/DigitalSteering/issues) **·** [Download](https://github.com/Mrflops/DigitalSteering/releases)
+
 # DigitalSteering
 ### What is DigitalSteering?
 At its core, DigitalSteering employs sophisticated algorithms to interpret user inputs and translate them into virtual steering commands. The program mimics the functionality of a physical steering wheel, allowing users to navigate and control in-game vehicles with precision.
@@ -9,7 +11,7 @@ DigitalSteering takes a step further by addressing the specific needs of individ
 
 ![image-2023-12-30-111624263](https://i.ibb.co/qgBC6J3/image-2023-12-30-111624263.png)
 
-#Guide
+# Guide
 We have a vscode and pycharm guide. Please ask if you need help for a different application
 
 ### Download the Code
@@ -36,7 +38,7 @@ Go into pycharm and click on the three bars on top left. Click open... and selec
 ### Exit the Application
 To exit the application, press the 'q' key while the application window is active.
 
-Make sure your system has a webcam or an external camera connected. The script uses the default camera (index 0). If you have multiple cameras or a different camera index, you may need to modify the code by changing the number from (0) (Line 61)
+Make sure your system has a webcam or an external camera connected. The script uses the default camera (index 0). If you have multiple cameras or a different camera index, you may need to modify the code by changing the number from (0)
 
 Feel free to ask if you have any questions or encounter any issues!
 
