@@ -1,3 +1,5 @@
+[Open an Issue](https://github.com/Mrflops/DigitalSteering/issues) **·** [Download](https://github.com/Mrflops/DigitalSteering/releases)
+
 # DigitalSteering
 ### What is DigitalSteering?
 At its core, DigitalSteering employs sophisticated algorithms to interpret user inputs and translate them into virtual steering commands. The program mimics the functionality of a physical steering wheel, allowing users to navigate and control in-game vehicles with precision.
