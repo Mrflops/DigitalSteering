@@ -71,6 +71,8 @@ with mp_hands.Hands(
         min_tracking_confidence=0.5) as hands:
     try:
         swap_delay = 0.5  # Increase swap delay for smoother control
+        sensitivity_factor = 1  # Adjust this factor for sensitivity control 0.1 to 10 --- Degree of angle / sensitivity_factor
+        degrees_offset = 0 #Adjust this offset for angle offset negative or positive
 
         while cap.isOpened():
             current_time = time.time()
@@ -158,72 +160,72 @@ with mp_hands.Hands(
 
                         # Calculate angle in degrees
                         angle_rad = math.atan2(co[1][1][1] - co[0][1][1], co[1][1][0] - co[0][1][0])
-                        angle_deg = math.degrees(angle_rad)
+                        angle_deg = math.degrees(angle_rad) + degrees_offset  # Add offset
 
                         # Steering logic based on the adjusted angle
                         angle_rad = math.atan2(co[0][1][1] - co[1][1][1], co[0][1][0] - co[1][1][0])
-                        angle_deg = math.degrees(angle_rad)
+                        angle_deg = math.degrees(angle_rad) + degrees_offset  # Add offset
 
-                        # Adjusted angle for flipped orientation
-                        adjusted_angle_deg = -angle_deg
+                        # Adjust sensitivity
+                        adjusted_sensitivity = angle_deg / sensitivity_factor
 
                         if bkwrds == 0:
-                            if -20 <= adjusted_angle_deg <= 20:
+                            if -20 <= adjusted_sensitivity <= 20:
                                 print("Straight")
                                 press_key('w')
                                 release_key('a')
                                 release_key('d')
                                 release_key('s')
-                            elif -45 <= adjusted_angle_deg < -20:
+                            elif -45 <= adjusted_sensitivity < -20:
                                 print("Middle right")
                                 press_key('w')
                                 press_key('d')
                                 release_key('a')
                                 release_key('s')
-                            elif -90 <= adjusted_angle_deg < -45:
+                            elif -90 <= adjusted_sensitivity < -45:
                                 print("Hard right")
                                 press_key('d')
                                 release_key('w')
                                 release_key('a')
                                 release_key('s')
-                            elif 20 <= adjusted_angle_deg < 45:
+                            elif 20 <= adjusted_sensitivity < 45:
                                 print("Middle left")
                                 press_key('w')
                                 press_key('a')
                                 release_key('d')
                                 release_key('s')
-                            elif 45 <= adjusted_angle_deg <= 90:
+                            elif 45 <= adjusted_sensitivity <= 90:
                                 print("Hard left")
                                 press_key('a')
                                 release_key('w')
                                 release_key('d')
                                 release_key('s')
                         elif bkwrds == 1:
-                            if -20 <= adjusted_angle_deg <= 20:
+                            if -20 <= adjusted_sensitivity <= 20:
                                 print("Backwards")
                                 press_key('s')
                                 release_key('w')
                                 release_key('a')
                                 release_key('d')
-                            elif -45 <= adjusted_angle_deg < -20:
+                            elif -45 <= adjusted_sensitivity < -20:
                                 print("Middle left")
                                 press_key('s')
                                 press_key('a')
                                 release_key('w')
                                 release_key('d')
-                            elif -90 <= adjusted_angle_deg < -45:
+                            elif -90 <= adjusted_sensitivity < -45:
                                 print("Hard left")
                                 press_key('a')
                                 release_key('w')
                                 release_key('s')
                                 release_key('d')
-                            elif 20 <= adjusted_angle_deg < 45:
+                            elif 20 <= adjusted_sensitivity < 45:
                                 print("Light right")
                                 press_key('s')
                                 press_key('d')
                                 release_key('w')
                                 release_key('a')
-                            elif 45 <= adjusted_angle_deg <= 90:
+                            elif 45 <= adjusted_sensitivity <= 90:
                                 print("Hard right")
                                 press_key('d')
                                 release_key('w')
