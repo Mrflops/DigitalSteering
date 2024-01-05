@@ -77,7 +77,7 @@ Make sure your system has a webcam or an external camera connected. The script u
 Feel free to ask if you have any questions or encounter any issues!
 
 ### Common Errors
-MAKE SURE you have your python interpreter to the one youu installed your packages in.
+MAKE SURE you have your python interpreter to the one you installed your packages in.
 
 DO NOT be tabbed into the window with the camera output. Please click a different window to use it if you want to see the steering wheel. Else it shouldn't matter.
 
