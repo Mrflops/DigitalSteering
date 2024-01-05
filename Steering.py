@@ -8,6 +8,7 @@ keys = {'w': 0x11, 'a': 0x1E, 's': 0x1F, 'd': 0x20}
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
+
 font = cv2.FONT_HERSHEY_SIMPLEX
 bkwrds = 0
 PUL = ctypes.POINTER(ctypes.c_ulong)
@@ -62,14 +63,14 @@ def release_key(key):
 # Initialize the video capture outside the loop to avoid reopening it every iteration
 cap = cv2.VideoCapture(0)  # Change based on your Camera
 hands_detected = False
+last_swap_time = time.time()
 
 with mp_hands.Hands(
         model_complexity=0,
         min_detection_confidence=0.5,
         min_tracking_confidence=0.5) as hands:
     try:
-        swap_delay = 0.2
-        last_swap_time = time.time()
+        swap_delay = 0.5  # Increase swap delay for smoother control
 
         while cap.isOpened():
             current_time = time.time()
@@ -160,89 +161,80 @@ with mp_hands.Hands(
                         angle_deg = math.degrees(angle_rad)
 
                         # Steering logic based on the adjusted angle
-                        if bkwrds == 0:
-                            if -20 <= angle_deg <= 20:
-                                print("Straight")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('w')
-                            elif -45 <= angle_deg < -20:
-                                print("Light right")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('w')
-                                press_key('d')
-                            elif -90 <= angle_deg < -45:
-                                print("Hard right")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('d')
-                                release_key('a')
-                            elif 20 <= angle_deg < 45:
-                                print("Light left")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('w')
-                                press_key('a')
-                            elif 45 <= angle_deg <= 90:
-                                print("Hard left")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('a')
-                                release_key('d')
-                        if bkwrds == 1:
-                            if -20 <= angle_deg <= 20:
-                                print("Backwards")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('s')
-                            elif -45 <= angle_deg < -20:
-                                print("Light left")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('s')
-                                press_key('a')
-                            elif -90 <= angle_deg < -45:
-                                print("Hard left")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('a')
-                                release_key('a')
-                            elif 20 <= angle_deg < 45:
-                                print("Light right")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('s')
-                                press_key('d')
-                            elif 45 <= angle_deg <= 90:
-                                print("Hard right")
-                                release_key('a')
-                                release_key('d')
-                                release_key('w')
-                                release_key('s')
-                                press_key('d')
-                                release_key('d')
+                        angle_rad = math.atan2(co[0][1][1] - co[1][1][1], co[0][1][0] - co[1][1][0])
+                        angle_deg = math.degrees(angle_rad)
 
-                    swap_triggered['left'] = True
-                    swap_triggered['right'] = True
+                        # Adjusted angle for flipped orientation
+                        adjusted_angle_deg = -angle_deg
+
+                        if bkwrds == 0:
+                            if -20 <= adjusted_angle_deg <= 20:
+                                print("Straight")
+                                press_key('w')
+                                release_key('a')
+                                release_key('d')
+                                release_key('s')
+                            elif -45 <= adjusted_angle_deg < -20:
+                                print("Middle right")
+                                press_key('w')
+                                press_key('d')
+                                release_key('a')
+                                release_key('s')
+                            elif -90 <= adjusted_angle_deg < -45:
+                                print("Hard right")
+                                press_key('d')
+                                release_key('w')
+                                release_key('a')
+                                release_key('s')
+                            elif 20 <= adjusted_angle_deg < 45:
+                                print("Middle left")
+                                press_key('w')
+                                press_key('a')
+                                release_key('d')
+                                release_key('s')
+                            elif 45 <= adjusted_angle_deg <= 90:
+                                print("Hard left")
+                                press_key('a')
+                                release_key('w')
+                                release_key('d')
+                                release_key('s')
+                        elif bkwrds == 1:
+                            if -20 <= adjusted_angle_deg <= 20:
+                                print("Backwards")
+                                press_key('s')
+                                release_key('w')
+                                release_key('a')
+                                release_key('d')
+                            elif -45 <= adjusted_angle_deg < -20:
+                                print("Middle left")
+                                press_key('s')
+                                press_key('a')
+                                release_key('w')
+                                release_key('d')
+                            elif -90 <= adjusted_angle_deg < -45:
+                                print("Hard left")
+                                press_key('a')
+                                release_key('w')
+                                release_key('s')
+                                release_key('d')
+                            elif 20 <= adjusted_angle_deg < 45:
+                                print("Light right")
+                                press_key('s')
+                                press_key('d')
+                                release_key('w')
+                                release_key('a')
+                            elif 45 <= adjusted_angle_deg <= 90:
+                                print("Hard right")
+                                press_key('d')
+                                release_key('w')
+                                release_key('a')
+                                release_key('s')
+
+                        swap_triggered['left'] = True
+                        swap_triggered['right'] = True
+
+                        # Update the time of the last swap
+                        last_swap_time = time.time()
 
                 elif len(co) == 1:
                     hand_idx, _ = co[0]
@@ -256,18 +248,8 @@ with mp_hands.Hands(
                             release_key('s')
                             swap_triggered['left'] = True if hand_idx == 0 else False
                             swap_triggered['right'] = True if hand_idx == 1 else False
-                else:
-                    print("No hands detected")
-                    # No hands detected, release all keys
-                    release_key('a')
-                    release_key('d')
-                    release_key('w')
-                    release_key('s')
-                    swap_triggered['left'] = False
-                    swap_triggered['right'] = False
             else:
                 # No hands detected, release all keys
-                print("No hands detected")
                 release_key('a')
                 release_key('d')
                 release_key('w')
