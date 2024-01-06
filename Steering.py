@@ -71,7 +71,7 @@ with mp_hands.Hands(
         min_tracking_confidence=0.5) as hands:
     try:
         swap_delay = 0.5  # Increase swap delay for smoother control
-        sensitivity_factor = 1  # Adjust this factor for sensitivity control 0.1 to 10 --- Degree of angle / sensitivity_factor
+        sensitivity_factor = 1  # Adjust this factor for sensitivity control 0.1 to 2 --- Degree of angle / sensitivity_factor
         degrees_offset = 0 #Adjust this offset for angle offset negative or positive
 
         while cap.isOpened():
@@ -167,7 +167,7 @@ with mp_hands.Hands(
                         angle_deg = math.degrees(angle_rad) + degrees_offset  # Add offset
 
                         # Adjust sensitivity
-                        adjusted_sensitivity = angle_deg / sensitivity_factor
+                        adjusted_sensitivity = angle_deg * sensitivity_factor
 
                         if bkwrds == 0:
                             if -15 <= adjusted_sensitivity <= 15:
