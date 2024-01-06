@@ -36,6 +36,8 @@ pip install opencv-python
 
 pip install mediapipe
 
+pip install ctypes
+
 ### Run the Code
 Go into pycharm and click on the three bars on top left. Click open... and select the un-zipped file. Run steering.py by doing F10 + Shift or on the top right of the screen
 
@@ -69,6 +71,8 @@ Copy and paste the following into the terminal:
 pip install opencv-python
 
 pip install mediapipe
+
+pip install ctypes
 
 ### Run the Code
 Go into VScode and click on the File button on the top left. Click Open Folder and select the un-zipped file. After opening the file click on Steering.py. You should be able to run it from there
