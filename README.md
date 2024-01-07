@@ -14,7 +14,7 @@ DigitalSteering takes a step further by addressing the specific needs of individ
 # Guide
 We have a vscode and pycharm guide. Please ask if you need help for a different application
 
-For offsetting the degrees please insert the integer to the range of 0 (Normal) to 356 (Full Offset). Please change accordingly
+For offsetting the degrees please insert the integer to the range of 0 (Normal) to 365 (Full Offset). Please change accordingly
 
 Sensitivity is for changing how many degrees to steer. The less it is, more steering is required to turn. The more it is, less steering is required to turn. Please change accordingly
 
