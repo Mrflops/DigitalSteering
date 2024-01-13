@@ -67,8 +67,8 @@ last_swap_time = time.time()
 
 with mp_hands.Hands(
         model_complexity=0,
-        min_detection_confidence=0.5,
-        min_tracking_confidence=0.5) as hands:
+        min_detection_confidence=0.7,
+        min_tracking_confidence=0.7) as hands:
     try:
         swap_delay = 0.5  # Increase swap delay for smoother control
         sensitivity_factor = 1  # Adjust this factor for sensitivity control 0.1 to 2 --- Degree of angle / sensitivity_factor
@@ -215,7 +215,7 @@ with mp_hands.Hands(
                                 release_key('a')
                                 release_key('s')
                             elif -90 <= adjusted_sensitivity < -75: # RIGHT STOPS
-                                print("Hard right")
+                                print("D")
                                 press_key('d')
                                 release_key('w')
                                 release_key('a')
@@ -243,7 +243,7 @@ with mp_hands.Hands(
                                 release_key('d')
                                 release_key('s')
                             elif 45 <= adjusted_sensitivity < 60:
-                                print("Middle left")
+                                print("WA")
                                 press_key('w')
                                 press_key('a')
                                 release_key('d')
@@ -259,14 +259,14 @@ with mp_hands.Hands(
                                 release_key('d')
                                 release_key('s')
                             elif 75 <= adjusted_sensitivity < 90: # RIGHT STOPS
-                                print("Hard right")
+                                print("A")
                                 press_key('a')
                                 release_key('w')
                                 release_key('d')
                                 release_key('s')
                         elif bkwrds == 1:
                             if -15 <= adjusted_sensitivity <= 15:
-                                print("Backwards")
+                                print("S")
                                 press_key('s')
                                 release_key('a')
                                 release_key('d')
@@ -316,16 +316,16 @@ with mp_hands.Hands(
                                 release_key('a')
                                 release_key('s')
                             if 15 <= adjusted_sensitivity <= 30:
-                                print("SSSD")
+                                print("SSSA")
                                 press_key('s')
                                 release_key('s')
                                 press_key('s')
                                 release_key('s')
                                 press_key('s')
                                 release_key('s')
-                                press_key('d')
-                                release_key('d')
+                                press_key('a')
                                 release_key('a')
+                                release_key('d')
                                 release_key('w')
                             if 30 <= adjusted_sensitivity <= 45:
                                 print("SSA")
@@ -338,13 +338,13 @@ with mp_hands.Hands(
                                 release_key('d')
                                 release_key('w')
                             elif 45 <= adjusted_sensitivity < 60:
-                                print("Middle left")
+                                print("SA")
                                 press_key('s')
                                 press_key('a')
                                 release_key('d')
                                 release_key('w')
                             if 60 <= adjusted_sensitivity <= 75:
-                                print("SDD")
+                                print("SAA")
                                 press_key('s')
                                 release_key('s')
                                 press_key('a')
@@ -354,7 +354,7 @@ with mp_hands.Hands(
                                 release_key('d')
                                 release_key('s')
                             elif 75 <= adjusted_sensitivity < 90:  # RIGHT STOPS
-                                print("Hard left")
+                                print("A")
                                 press_key('a')
                                 release_key('w')
                                 release_key('a')
