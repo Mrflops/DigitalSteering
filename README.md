@@ -14,7 +14,7 @@ DigitalSteering takes a step further by addressing the specific needs of individ
 # Guide
 We have a vscode and pycharm guide. Please ask if you need help for a different application
 
-For offsetting the degrees please insert the integer to the range of 0 (Normal) to 356 (Full Offset). Please change accordingly
+For offsetting the degrees please insert the integer to the range of 0 (Normal) to 365 (Full Offset). Please change accordingly
 
 Sensitivity is for changing how many degrees to steer. The less it is, more steering is required to turn. The more it is, less steering is required to turn. Please change accordingly
 
@@ -35,6 +35,8 @@ Copy and paste the following into the terminal:
 pip install opencv-python
 
 pip install mediapipe
+
+pip install ctypes
 
 ### Run the Code
 Go into pycharm and click on the three bars on top left. Click open... and select the un-zipped file. Run steering.py by doing F10 + Shift or on the top right of the screen
@@ -69,6 +71,8 @@ Copy and paste the following into the terminal:
 pip install opencv-python
 
 pip install mediapipe
+
+pip install ctypes
 
 ### Run the Code
 Go into VScode and click on the File button on the top left. Click Open Folder and select the un-zipped file. After opening the file click on Steering.py. You should be able to run it from there
