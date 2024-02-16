@@ -68,11 +68,11 @@ First, you need to install the necessary Python packages. To open the integrated
 
 Copy and paste the following into the terminal:
 
-pip install opencv-python
+```pip install opencv-python```
 
-pip install mediapipe
+```pip install mediapipe```
 
-pip install ctypes
+```pip install ctypes```
 
 ### Run the Code
 Go into VScode and click on the File button on the top left. Click Open Folder and select the un-zipped file. After opening the file click on Steering.py. You should be able to run it from there
